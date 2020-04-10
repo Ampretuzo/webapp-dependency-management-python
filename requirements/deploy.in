@@ -1,0 +1,4 @@
+-c pip-tools.txt
+-c base.txt
+
+gunicorn~=20.0

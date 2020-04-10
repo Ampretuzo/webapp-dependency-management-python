@@ -1,0 +1,4 @@
+-c requirements.quickstart.base.txt
+
+pytest~=5.4
+coverage~=5.0

@@ -1,0 +1,4 @@
+-r requirements.quickstart.base.in
+
+pytest~=5.4
+coverage~=5.0

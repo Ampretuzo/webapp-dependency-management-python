@@ -311,9 +311,35 @@ virtualenv venv_dev --python=/usr/bin/python3.6
 source venv_dev/bin/activate.fish
 pip install --no-deps -r requirements.quickstart.base.txt -r requirements.quickstart.dev.txt
 ```
-Again, it's _important_ to use `--no-deps` flag. (TODO: maybe illustrate, or explain that?)
+Again, it's _important_ to use `--no-deps` flag. (TODO: maybe illustrate, or explain that? EDIT: turns out `--no-deps` is not necessary with _pinned_ requirement files, should edit text accordingly.)
 
 
 #### `pip-sync`
+
+The name is self-descriptive: while `pip install -r` only installs stuff, it doesn't attempt to synchronize the environment to given `.txt` files, whereas `pip-sync` does just that.  
+To see it in action we run it in `venv_dev`, created above:
+```console
+(venv_dev) $ pip install pip-tools
+(venv_dev) $ pip-sync requirements.quickstart.base.txt
+Found existing installation: attrs 19.3.0
+Uninstalling attrs-19.3.0:
+  Successfully uninstalled attrs-19.3.0
+Found existing installation: coverage 5.0.4
+Uninstalling coverage-5.0.4:
+  Successfully uninstalled coverage-5.0.4
+...
+Found existing installation: zipp 3.1.0
+Uninstalling zipp-3.1.0:
+  Successfully uninstalled zipp-3.1.0
+```
+Basically, `pip-sync` had to uninstall every dependeny in `requirements.quickstart.dev.txt` to leave us with only `requirements.quickstart.base.txt` libraries. With one exception: it doesn't uninstall itself:
+```console
+$ pip freeze | grep pip-tools
+pip-tools==4.5.1
+```
+We might not want to have `pip-tools` in e.g. our production environment, which means that `pip-sync` is not a `pip install -r` replacement, but a convenience tool to help during development, when making edits to requirement files. We would compile and synchronize dependencies as necessary, removing the need of creating fresh virtual environment each time.  
+
+
+## Worlflow with `Makefile`
 
 TODO

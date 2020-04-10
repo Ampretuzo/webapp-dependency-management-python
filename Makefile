@@ -25,16 +25,16 @@ venv/bin/activate:
 
 # Requirements:
 
-requirements/base.txt: .make.venv.pip-tools requirements/pip-tools.txt
-requirements/base.txt: requirements/base.in
+requirements/base.txt: requirements/pip-tools.txt requirements/base.in
+requirements/base.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile requirements/base.in
 
-requirements/deploy.txt: .make.venv.pip-tools requirements/pip-tools.txt
-requirements/deploy.txt: requirements/base.txt requirements/dev.in
+requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/dev.in
+requirements/deploy.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile requirements/deploy.in
 
-requirements/dev.txt: .make.venv.pip-tools requirements/pip-tools.txt
-requirements/dev.txt: requirements/base.txt requirements/deploy.txt requirements/dev.in
+requirements/dev.txt: requirements/pip-tools.txt requirements/base.txt requirements/deploy.txt requirements/dev.in
+requirements/dev.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile requirements/dev.in
 
 .PHONY: requirements

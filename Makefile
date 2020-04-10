@@ -19,6 +19,10 @@ venv/bin/activate:
 	source venv/bin/activate && pip install -r requirements/pip-tools.txt
 	touch .make.venv.pip-tools
 
+.make.venv.dev: .make.venv.pip-tools
+.make.venv.dev: requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+	source venv/bin/activate && pip-sync requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+
 # Requirements:
 
 requirements/base.txt: .make.venv.pip-tools requirements/pip-tools.txt
@@ -35,3 +39,9 @@ requirements/dev.txt: requirements/base.txt requirements/deploy.txt requirements
 
 .PHONY: requirements
 requirements: requirements/base.txt requirements/dev.txt requirements/deploy.txt
+
+# Entrypoints:
+
+.PHONY: test_unit
+test_unit: .make.venv.dev
+	source venv/bin/activate && python -c 'import pytest; print("pytest would run as version " + pytest.__version__ + "!")'

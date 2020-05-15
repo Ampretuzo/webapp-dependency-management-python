@@ -29,7 +29,7 @@ requirements/base.txt: requirements/pip-tools.txt requirements/base.in
 requirements/base.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile --upgrade requirements/base.in
 
-requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/dev.in
+requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/deploy.in
 requirements/deploy.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile  --upgrade requirements/deploy.in
 

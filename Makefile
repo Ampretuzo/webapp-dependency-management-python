@@ -27,15 +27,15 @@ venv/bin/activate:
 
 requirements/base.txt: requirements/pip-tools.txt requirements/base.in
 requirements/base.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/base.in
+	source venv/bin/activate && pip-compile --upgrade requirements/base.in
 
 requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/dev.in
 requirements/deploy.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/deploy.in
+	source venv/bin/activate && pip-compile  --upgrade requirements/deploy.in
 
 requirements/dev.txt: requirements/pip-tools.txt requirements/base.txt requirements/deploy.txt requirements/dev.in
 requirements/dev.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/dev.in
+	source venv/bin/activate && pip-compile  --upgrade requirements/dev.in
 
 .PHONY: requirements-upgrade
 requirements-upgrade: requirements/base.txt requirements/dev.txt requirements/deploy.txt

@@ -1,7 +1,7 @@
 .DELETE_ON_ERROR:
 SHELL := /bin/bash
 
-.PHONY:
+.PHONY: clean
 clean:
 	rm -f .make.*
 	rm -rf venv*
@@ -21,7 +21,9 @@ venv/bin/activate:
 
 .make.venv.dev: .make.venv.pip-tools
 .make.venv.dev: requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+	@echo 'NOTE: Run `touch requirements/{base,deploy,dev}.txt` to snooze dependency upgrade'
 	source venv/bin/activate && pip-sync requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+	touch .make.venv.dev
 
 # Requirements:
 

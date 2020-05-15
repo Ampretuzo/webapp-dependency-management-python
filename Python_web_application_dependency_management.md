@@ -64,7 +64,12 @@ test-unit: .make.venv.dev
 Above `Makefile` is very minimal and I actually use it as a template when bootstrapping new projects.  
 It provides two "entry points": `make requirements-upgrade` and `make test-unit`.  
 The former upgrades all of our dependencies, the latter creates an actual Python development environment and imports `pytest` to simulate testing. These two are enough to get the gist of how `make` glues `pip-tools` and `virtualenv` together - other targets could then be easily added.  
-TODO: elaborate on each "make" target.
+
+Both "compiled" and "source" requirement files are tucked away in the `requirements` directory. Otherwise, we would clutter project root since there are 8 of them in total.
+
+`pip-compile` lends itself nicely to `make` since `GNU Make` is tailored for artifact-compilation style of workflows. `pip-compile` is pip dash _compile_, after all, right?  
+Hence, `requirements/*.txt` targets and their prerequisites map nicely to how `requirements/*.in` files really depend on each other.  
+For example, `requirements/deploy.in` is constrained by `requirements/pip-tools.txt` and `requirements/base.txt` and therefore `requirements/deploy.txt` target has both of those files as prerequisites. If we edit `requirements/base.in` and `make requirements-upgrade` all of the requirement files will get upgraded, since they all depend on the base one. If we edit just the `requirements/dev.in` file, only `requirements/dev.txt` will get compiled, since nothing else depends on that.
 
 
 ## The tools

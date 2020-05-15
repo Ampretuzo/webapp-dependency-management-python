@@ -37,11 +37,11 @@ requirements/dev.txt: requirements/pip-tools.txt requirements/base.txt requireme
 requirements/dev.txt: | .make.venv.pip-tools
 	source venv/bin/activate && pip-compile requirements/dev.in
 
-.PHONY: requirements
-requirements: requirements/base.txt requirements/dev.txt requirements/deploy.txt
+.PHONY: requirements-upgrade
+requirements-upgrade: requirements/base.txt requirements/dev.txt requirements/deploy.txt
 
 # Entrypoints:
 
 .PHONY: test_unit
-test_unit: .make.venv.dev
+test-unit: .make.venv.dev
 	source venv/bin/activate && python -c 'import pytest; print("pytest would run as version " + pytest.__version__ + "!")'

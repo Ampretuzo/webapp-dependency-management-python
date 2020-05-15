@@ -44,6 +44,6 @@ requirements-upgrade: requirements/base.txt requirements/dev.txt requirements/de
 
 # Entrypoints:
 
-.PHONY: test_unit
+.PHONY: test-unit
 test-unit: .make.venv.dev
 	source venv/bin/activate && python -c 'import pytest; print("pytest would run as version " + pytest.__version__ + "!")'

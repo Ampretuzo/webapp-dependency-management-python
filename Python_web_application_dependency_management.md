@@ -4,7 +4,7 @@ These tools are simple and reliable. And flexible, as a corollary of their simpl
 In the last project I brought everything under the same roof using a good old `Makefile`.  
 This writeup is supposed to document my approach with these tools.
 
-I'll start with `Makefile` code right away, since that's more convenient to read for those who already understand individual tools involved. Newcomers to `pip-tools` or `virtualenv` are encouraged to start from the later corresponding sections and come back after they've familiarized themselves with these tools.
+I'll start with `Makefile` right away, newcomers to `pip-tools` or `virtualenv` are encouraged to start from the later corresponding sections and come back after they've familiarized themselves with these tools.
 
 ## `Makefile` workflow
 
@@ -12,7 +12,7 @@ I'll start with `Makefile` code right away, since that's more convenient to read
 .DELETE_ON_ERROR:
 SHELL := /bin/bash
 
-.PHONY:
+.PHONY: clean
 clean:
 	rm -f .make.*
 	rm -rf venv*
@@ -32,34 +32,37 @@ venv/bin/activate:
 
 .make.venv.dev: .make.venv.pip-tools
 .make.venv.dev: requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+	@echo 'NOTE: Run `touch requirements/{base,deploy,dev}.txt` to snooze dependency upgrade'
 	source venv/bin/activate && pip-sync requirements/pip-tools.txt requirements/base.txt requirements/dev.txt
+	touch .make.venv.dev
 
 # Requirements:
 
 requirements/base.txt: requirements/pip-tools.txt requirements/base.in
 requirements/base.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/base.in
+	source venv/bin/activate && pip-compile --upgrade requirements/base.in
 
-requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/dev.in
+requirements/deploy.txt: requirements/pip-tools.txt requirements/base.txt requirements/deploy.in
 requirements/deploy.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/deploy.in
+	source venv/bin/activate && pip-compile  --upgrade requirements/deploy.in
 
 requirements/dev.txt: requirements/pip-tools.txt requirements/base.txt requirements/deploy.txt requirements/dev.in
 requirements/dev.txt: | .make.venv.pip-tools
-	source venv/bin/activate && pip-compile requirements/dev.in
+	source venv/bin/activate && pip-compile  --upgrade requirements/dev.in
 
-.PHONY: requirements
-requirements: requirements/base.txt requirements/dev.txt requirements/deploy.txt
+.PHONY: requirements-upgrade
+requirements-upgrade: requirements/base.txt requirements/dev.txt requirements/deploy.txt
 
 # Entrypoints:
 
-.PHONY: test_unit
-test_unit: .make.venv.dev
+.PHONY: test-unit
+test-unit: .make.venv.dev
 	source venv/bin/activate && python -c 'import pytest; print("pytest would run as version " + pytest.__version__ + "!")'
 
 ```
 
-Above `Makefile` provides two "entry points": `make requirements` and `make test_unit`.  
+Above `Makefile` is very minimal and I actually use it as a template when bootstrapping new projects.  
+It provides two "entry points": `make requirements-upgrade` and `make test-unit`.  
 The former upgrades all of our dependencies, the latter creates an actual Python development environment and imports `pytest` to simulate testing. These two are enough to get the gist of how `make` glues `pip-tools` and `virtualenv` together - other targets could then be easily added.  
 TODO: elaborate on each "make" target.
 
